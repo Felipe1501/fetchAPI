@@ -39,6 +39,42 @@ window.onload = function(){
     })
   })
 
+  qrcode.addEventListener("click", function(){
+           cordova.plugins.barcodeScanner.scan(
+      function (result) {
+    fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${result.text }`, {
+    method: "get",
+     mode:'cors',
+     cache:'default' 
+  }).then(response=>{
+    response.json().then(data => {
+      nome.value = data['nome'];
+      curso.value = data['curso'];
+            
+      },
+      function (error) {
+          alert("fALHA AO SCANEAR: " + error);
+      },
+      {
+          preferFrontCamera : false,
+          showFlipCameraButton : true, 
+          showTorchButton : true, 
+          torchOn: true, 
+          saveHistory: true,
+          prompt : "Coloque a Camera no Código para Scanear", 
+          resultDisplayDuration: 500, 
+          formats : "QR_CODE,PDF_417,CODE_39",
+          orientation : "landscape", 
+          disableAnimations : true, 
+          disableSuccessBeep: false 
+      }
+   );
+      })
+    })
+
+
+});
+
   alterar.addEventListener("click", function(){
   fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${id.value }`, {
     method: "put",
@@ -73,3 +109,4 @@ fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${id.value }`, {
     curso.value = "";
 }
   }
+  
