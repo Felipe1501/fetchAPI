@@ -19,7 +19,8 @@ window.onload = function(){
      mode:'cors',
      cache:'default' 
     }).then(()=>{
-      alert("Registro foi efetuado com Sucesso");
+      
+alert("Registro foi efetuado com Sucesso");
       LimparCampos();
     }
 
@@ -35,6 +36,12 @@ window.onload = function(){
     response.json().then(data => {
       nome.value = data['nome'];
       curso.value = data['curso'];
+      /*if(checkConnection()){
+
+}else{
+  alert('Sem Conexão com a Internet, tente novamente mais tarde!!!');
+  
+}*/
       })
     })
   })
@@ -113,5 +120,43 @@ limpar.addEventListener("click", function(){
   id.value = "";
   LimparCampos();
 })
+
+function checkConnection() {
+    var networkState = navigator.connection.type;
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    if(states[networkState] == 'No network connection'){
+       return false;
+    }else{
+      return true;
+    }
+}
+
+/*if(checkConnection()){
+  alert('Tem Internet')
+}else{
+  alert('Sem Internet');
+}*/
+buscar, qrcode, cadastrar, alterar, deletar, limpar.addEventListener("offline", onOffline, false);
+
+  function confirma(buttonIndex){
+    if(buttonIndex == 1){
+      navigator.app.exitApp();
+    }
+  }
+  
+  function onOffline(){
+    navigator.notification.confirm("Sem Internet, tente Novamente mais tarde!!!",confirma,"Ops!!!",['Sair','Ok']);
+  }
+
   }
   
