@@ -7,7 +7,37 @@ window.onload = function(){
   const alterar = document.querySelector("#alterar");
   const deletar = document.querySelector("#deletar");
 
+  function Erro(buttonIndex){
+    if(buttonIndex==2){
+      navigator.app.exitApp();
+    }else{
+      return false;
+    }
+  }
+  
+ function Messagem(message){
+   navigator.notification.confirm(
+     message,
+      Erro,
+      "Ops!!!",
+      ['Sair','Ok']);
+ }
+
+  function checkConnection() {
+    var networkState = navigator.connection.type;
+
+    var states = {};
+    states[Connection.NONE] = 1;
+
+    if(states[networkState] == 1){
+       return false;
+    }else{
+      return true;
+    }
+}
+
   cadastrar.addEventListener("click", function(){
+    if(checkConnection()){
     let formdata = new FormData();
     formdata.append('nome', `${nome.value}`);
     formdata.append('curso', `${curso.value}`);
@@ -20,33 +50,37 @@ window.onload = function(){
      cache:'default' 
     }).then(()=>{
       
-alert("Registro foi efetuado com Sucesso");
+alert("O Registro foi efetuado com Sucesso");
       LimparCampos();
     }
 
     );
+    }else{
+      Messagem("Sem conexão com a Internet, tente cadastar novamente mais tarde!!!");
+    }
   });
 
   buscar.addEventListener("click", function(){
+    if(checkConnection()){
     fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${id.value }`, {
     method: "get",
      mode:'cors',
      cache:'default' 
+     
   }).then(response=>{
     response.json().then(data => {
       nome.value = data['nome'];
       curso.value = data['curso'];
-      /*if(checkConnection()){
-
-}else{
-  alert('Sem Conexão com a Internet, tente novamente mais tarde!!!');
-  
-}*/
+      
       })
     })
-  })
+    }else{
+    Messagem("Sem conexão com a Internet, tente Buscar novamente mais tarde!!!");
+    }
+  });
 
   qrcode.addEventListener("click", function(){
+    if(checkConnection()){
            cordova.plugins.barcodeScanner.scan(
       function (result) {
     fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${result.text }`, {
@@ -78,11 +112,15 @@ alert("Registro foi efetuado com Sucesso");
    );
       })
     })
+    }else{
+      Messagem("Sem conexão com a Internet, tente Scanear novamente mais tarde!!!");
+    }
 
 
 });
 
   alterar.addEventListener("click", function(){
+    if(checkConnection()){
   fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${id.value }`, {
     method: "put",
     mode:'cors',
@@ -98,9 +136,13 @@ alert("Registro foi efetuado com Sucesso");
     alert("O Registro foi Alterado com Sucesso!!!")
     LimparCampos();
   });
+    }else{
+      Messagem("Sem conexão com a Internet, tente Alterar novamente mais tarde!!!");
+    }
 });
 
 deletar.addEventListener("click", function(){
+  if(checkConnection()){
 fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${id.value }`, {
     method: "delete",
      mode:'cors',
@@ -109,6 +151,9 @@ fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${id.value }`, {
     alert("O Registro foi Deletado Com Sucesso!!!")
     LimparCampos();
     });
+  }else{
+    Messagem("Sem conexão com a Internet, tente Deletar novamente mais tarde!!!");
+  }
 });
 
   function LimparCampos(){
@@ -117,46 +162,19 @@ fetch(`https://www.jussimarleal.com.br/exemplo_api/pessoa/${id.value }`, {
 }
 
 limpar.addEventListener("click", function(){
+  if(checkConnection()){
   id.value = "";
   LimparCampos();
+  }else{
+    Messagem("Sem conexão com a Internet, tente Limpar novamente mais tarde!!!");
+  }
 })
-
-function checkConnection() {
-    var networkState = navigator.connection.type;
-
-    var states = {};
-    states[Connection.UNKNOWN]  = 'Unknown connection';
-    states[Connection.ETHERNET] = 'Ethernet connection';
-    states[Connection.WIFI]     = 'WiFi connection';
-    states[Connection.CELL_2G]  = 'Cell 2G connection';
-    states[Connection.CELL_3G]  = 'Cell 3G connection';
-    states[Connection.CELL_4G]  = 'Cell 4G connection';
-    states[Connection.CELL]     = 'Cell generic connection';
-    states[Connection.NONE]     = 'No network connection';
-
-    if(states[networkState] == 'No network connection'){
-       return false;
-    }else{
-      return true;
-    }
-}
 
 /*if(checkConnection()){
   alert('Tem Internet')
 }else{
   alert('Sem Internet');
 }*/
-buscar, qrcode, cadastrar, alterar, deletar, limpar.addEventListener("offline", onOffline, false);
-
-  function confirma(buttonIndex){
-    if(buttonIndex == 1){
-      navigator.app.exitApp();
-    }
-  }
-  
-  function onOffline(){
-    navigator.notification.confirm("Sem Internet, tente Novamente mais tarde!!!",confirma,"Ops!!!",['Sair','Ok']);
-  }
 
   }
   
