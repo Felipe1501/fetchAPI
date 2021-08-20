@@ -20,7 +20,7 @@ window.onload = function(){
      message,
       Erro,
       "Ops!!!",
-      ['Sair','Ok']);
+      ['OK','SAIR']);
  }
 
   function checkConnection() {
@@ -56,7 +56,7 @@ alert("O Registro foi efetuado com Sucesso");
 
     );
     }else{
-      Messagem("Sem conexão com a Internet, tente cadastar novamente mais tarde!!!");
+      Messagem("Sem conexão com a Internet, tente Cadastrar novamente mais tarde!!!");
     }
   });
 
